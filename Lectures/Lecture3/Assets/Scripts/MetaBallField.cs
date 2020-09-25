@@ -17,6 +17,11 @@ public class MetaBallField
     {
         _ballPositions = Balls.Select(x => x.position).ToArray();
     }
+
+    public Vector3 getMassCenter()
+    {
+        return (_ballPositions[0] + _ballPositions[1] + _ballPositions[2]) / 3;
+    }
     
     /// <summary>
     /// Calculate scalar field value at point
