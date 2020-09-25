@@ -145,56 +145,11 @@ public class MeshGenerator : MonoBehaviour
 
 
         var centerCoord = Field.getMassCenter();
-        // var meshCubes = new List<Cube>();
         const float begin = -3f;
         const float end = 3f;
         const float cubeSize = 0.1f;
-        
-        
-        // List<Vector3> cubeVertices = new List<Vector3>
-        // {
-        //     new Vector3(0, 0, 0), // 0
-        //     new Vector3(0, 1, 0), // 1
-        //     new Vector3(1, 1, 0), // 2
-        //     new Vector3(1, 0, 0), // 3
-        //     new Vector3(0, 0, 1), // 4
-        //     new Vector3(0, 1, 1), // 5
-        //     new Vector3(1, 1, 1), // 6
-        //     new Vector3(1, 0, 1), // 7
-        // };
-        //
-        // List<Vector3> cubeVertices = new List<Vector3>
-        // {
-        //     new Vector3(centerCoord[0] + begin, centerCoord[1] + begin, centerCoord[2] + begin), // 0
-        //     new Vector3(centerCoord[0] + begin, centerCoord[1] + end, centerCoord[2] + begin), // 1
-        //     new Vector3(centerCoord[0] + end, centerCoord[1] + end, centerCoord[2] + begin), // 3
-        //     new Vector3(centerCoord[0] + end, centerCoord[1] + begin, centerCoord[2] + begin), // 2
-        //     new Vector3(centerCoord[0] + begin, centerCoord[1] + begin, centerCoord[2] + end), // 4
-        //     new Vector3(centerCoord[0] + begin, centerCoord[1] + end, centerCoord[2] + end), // 5
-        //     new Vector3(centerCoord[0] + end, centerCoord[1] + end, centerCoord[2] + end), // 6
-        //     new Vector3(centerCoord[0] + end, centerCoord[1] + begin, centerCoord[2] + end), // 7
-        // };
-        //
-        // int[] sourceTriangles =
-        // {
-        //     0, 1, 2, 2, 3, 0, // front
-        //     3, 2, 6, 6, 7, 3, // right
-        //     7, 6, 5, 5, 4, 7, // back
-        //     0, 4, 5, 5, 1, 0, // left
-        //     0, 3, 7, 7, 4, 0, // bottom
-        //     1, 5, 6, 6, 2, 1, // top
-        // };
 
 
-
-
-        // var cube = new Cube(centerCoord[0], centerCoord[1], centerCoord[2], cube_size * 10,
-        //     vertices, normals, indices, Field);
-        // meshCubes.Add(cube);
-        // cube.addTriangles();
-        
-        
-        
         for (var i = centerCoord[0] + begin; i < centerCoord[0] + end; i += cubeSize)
         {
             for (var j = centerCoord[1] + begin; j < centerCoord[1] + end; j += cubeSize)
@@ -207,11 +162,6 @@ public class MeshGenerator : MonoBehaviour
                 }
             }
         }
-        
-        // foreach (var meshCube in meshCubes)
-        // {
-        //     meshCube.addTriangles();
-        // }
 
         // ----------------------------------------------------------------
         // Generate mesh here. Below is a sample code of a cube generation.
