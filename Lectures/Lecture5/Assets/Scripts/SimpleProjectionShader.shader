@@ -58,6 +58,8 @@ Shader "Custom/ProjectionShader"
                 
                 // Calculate world space position of the vertex here and pass it to a vertex shader.
                 
+                o.wPos = mul(unity_ObjectToWorld, v.vertex);
+                
                 return o;
             }
             
@@ -73,8 +75,15 @@ Shader "Custom/ProjectionShader"
             {
                 i.normal = normalize(i.normal);
                 
-                // Calculate albedo by projecting _XAlbedo, _YAlbedo, _ZAlbedo on world position. Asjust texel to world space ratio using _Scale.
-                fixed4 albedo = fixed4(0.5, 0.5, 0.5, 1);
+                // Calculate albedo by projecting _XAlbedo, _YAlbedo, _ZAlbedo on world position. Asjust texel to world space ratio using _Scale.                
+                
+                float4 yz = tex2D(_XAlbedo, float2(i.wPos.y, i.wPos.z) * _Scale);
+                float4 xz = tex2D(_YAlbedo, float2(i.wPos.x, i.wPos.z) * _Scale);
+                float4 xy = tex2D(_ZAlbedo, float2(i.wPos.x, i.wPos.y) * _Scale);
+                
+                fixed4 albedo = i.normal.x * i.normal.x * yz +
+                    i.normal.y * i.normal.y * xz +
+                        i.normal.z * i.normal.z * xy;
                 
                 return float4(albedo.rgb * getLighting(i), 1);
             }
