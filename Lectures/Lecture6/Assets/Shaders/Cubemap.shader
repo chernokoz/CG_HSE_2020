@@ -98,10 +98,40 @@
                 // Replace this specular calculation by Montecarlo.
                 // Normalize the BRDF in such a way, that integral over a hemysphere of (BRDF * dot(normal, w')) == 1
                 // TIP: use Random(i) to get a pseudo-random value.
-                float3 viewRefl = reflect(-viewDirection.xyz, normal);
-                float3 specular = SampleColor(viewRefl);
-                
-                return fixed4(specular, 1);
+
+                int n = 200;
+                float3 sum = float3(0, 0, 0);
+                float3 sum1 = float3(0, 0, 0);
+
+                float alpha;
+                float cosTheta;
+                float sinTheta;
+                float3 local_direction;
+                float3 absolute_direction;
+                float3 direction;
+
+                float3 new_y = normal;
+                float3 new_x = normalize(cross(normal, float3(0, 1, 0)));
+                float3 new_z = cross(new_x, new_y);
+
+                for (int i = 0; i < n; i++)
+                {
+                    alpha = Random(i) * 2 * UNITY_PI;
+                    cosTheta = Random(i + n);
+                    sinTheta = sqrt(1 - Sqr(cosTheta));
+                    local_direction.x = sinTheta * cos(alpha);
+                    local_direction.y = cosTheta;
+                    local_direction.z = sinTheta * sin(alpha);
+                    absolute_direction = local_direction.x * new_x + local_direction.y * new_y + local_direction.z * new_z;
+                    direction = normalize(absolute_direction);
+                    sum += SampleColor(direction) * GetSpecularBRDF(viewDirection, direction, normal) * cosTheta;
+                    sum1 += GetSpecularBRDF(viewDirection, direction, normal) * cosTheta;
+                }
+
+                float3 res = sum  / sum1;
+
+
+                return fixed4(res, 1);
             }
             ENDCG
         }
