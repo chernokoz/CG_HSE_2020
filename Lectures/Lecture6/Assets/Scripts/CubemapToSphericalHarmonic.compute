@@ -74,6 +74,7 @@ void ComputeHarmonics(uint id : SV_DispatchThreadID)
     float3 L_2_0_sum;
     float3 L_2_1_sum;
     float3 L_2_2_sum;
+    
 
     for (int i = 0; i < n; i++)
     {
@@ -84,17 +85,18 @@ void ComputeHarmonics(uint id : SV_DispatchThreadID)
         local_direction.y = cosTheta;
         local_direction.z = sinTheta * sin(alpha);
         direction = normalize(float3(local_direction.x, local_direction.y, local_direction.z));
+
+        float3 sample = SampleColor(direction);
         
-        L_0_0_sum += SampleColor(direction);
-        L_1_min1_sum += SampleColor(direction) * direction.y;
-        L_1_0_sum += SampleColor(direction) * direction.z;
-        L_1_1_sum += SampleColor(direction) * direction.x;
-        L_2_min2_sum += SampleColor(direction) * direction.x * direction.y;
-        L_2_min1_sum += SampleColor(direction) * direction.y * direction.z;
-        L_2_0_sum += SampleColor(direction) * (3 * direction.z * direction.z - 1);
-        L_2_1_sum += SampleColor(direction) * direction.x * direction.z;
-        L_2_2_sum += SampleColor(direction) * (direction.x * direction.x - direction.y - direction.y);
-        
+        L_0_0_sum += sample;
+        L_1_min1_sum += sample * direction.y;
+        L_1_0_sum += sample * direction.z;
+        L_1_1_sum += sample * direction.x;
+        L_2_min2_sum += sample * direction.x * direction.y;
+        L_2_min1_sum += sample * direction.y * direction.z;
+        L_2_0_sum += sample * (3 * direction.z * direction.z - 1);
+        L_2_1_sum += sample * direction.x * direction.z;
+        L_2_2_sum += sample * 15 / 16 * (direction.x * direction.x - direction.y * direction.y);
     }
 
     float area = FOUR_PI * 1 * 1;
@@ -141,7 +143,7 @@ void ComputeHarmonics(uint id : SV_DispatchThreadID)
         float4(L_2_min2_sum.y, L_2_min1_sum.y, L_2_1_sum.y, L_2_0_sum.y), // SH_2_g
         float4(L_2_min2_sum.z, L_2_min1_sum.z, L_2_1_sum.z, L_2_0_sum.z), // SH_2_b
         
-        float4(L_2_2_sum.x, L_2_2_sum.y, L_2_2_sum.z, 0), // SH_2_rgb
+        float4(L_2_2_sum.xyz, 0) // SH_2_rgb
     };
 
     // TASK: project light from _Env to spherical harmonic coefficients and store them in results[]
@@ -156,15 +158,3 @@ void ComputeHarmonics(uint id : SV_DispatchThreadID)
     
     SH_2_rgb[id] = results[6];
 }
-
-/*
-float4 results[7] = {
-    float4(0.0036f, 0.0526f, -0.0017f, 0.2530f),
-    float4(0.0020f, 0.2076f,  0.0093f, 0.3641f),
-    float4(0.0024f, 0.0501f, -0.0076f, 0.0042f),
-    float4(0.0025f, 0.0519f, -0.0046f, 0.0082f),
-    float4(0.0016f, 0.1011f,  0.0048f, 0.3180f),
-    float4(0.0031f, 0.0584f, -0.0035f, 0.0068f),
-    float4(0.0001f, 0.0002f,  0.0001f, 0.0000f),
-    };
-*/

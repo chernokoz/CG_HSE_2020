@@ -99,7 +99,7 @@
                 // Normalize the BRDF in such a way, that integral over a hemysphere of (BRDF * dot(normal, w')) == 1
                 // TIP: use Random(i) to get a pseudo-random value.
 
-                int n = 200;
+                int n = 3000;
                 float3 sum = float3(0, 0, 0);
                 float3 sum1 = float3(0, 0, 0);
 
